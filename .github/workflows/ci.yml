@@ -26,8 +26,10 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Run Pytest & Generate Report
+      env:
+        PYTHONPATH: .
       run: |
-        pytest --json-report --json-report-file=test-report.json
+        python -m pytest --json-report --json-report-file=test-report.json
 
     - name: Send Test Results to Receiver
       if: always()
