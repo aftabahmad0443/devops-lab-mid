@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Assignment Portal</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+            --btn-hover-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #c026d3 100%);
+            --bg-main: #0b0f19;
+            --card-bg: rgba(23, 32, 54, 0.75);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --input-bg: rgba(15, 23, 42, 0.6);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --error: #f43f5e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.18) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(217, 70, 239, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Translucent Navigation Bar */
+        .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--card-border);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 22px;
+            font-weight: 800;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand i {
+            color: #8b5cf6;
+            -webkit-text-fill-color: initial;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            background: rgba(30, 41, 59, 0.7);
+            padding: 5px;
+            border-radius: 14px;
+            border: 1px solid var(--card-border);
+        }
+
+        .nav-btn {
+            border: none;
+            background: transparent;
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-btn.active {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Main Container Layout */
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            width: 100%;
+            flex: 1;
+        }
+
+        .page-view {
+            display: none;
+            animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .page-view.active { display: block; }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glassmorphism Form Card */
+        .form-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-header h2 {
+            font-size: 26px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .form-header p {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin-top: 6px;
+            margin-bottom: 28px;
+        }
+
+        .form-group { margin-bottom: 22px; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--input-bg);
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            font-size: 15px;
+            color: #ffffff;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-group input::placeholder { color: #64748b; }
+
+        .form-group input:focus {
+            border-color: #8b5cf6;
+            background: rgba(15, 23, 42, 0.9);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.25);
+        }
+
+        /* Glowing Modern Buttons */
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 10px;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.35);
+        }
+
+        .submit-btn:hover {
+            background: var(--btn-hover-gradient);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Submissions Page Layout */
+        .records-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 42px;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            font-size: 14px;
+            color: #ffffff;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .grid-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .record-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .record-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(139, 92, 246, 0.15);
+        }
+
+        .card-badge {
+            background: rgba(139, 92, 246, 0.15);
+            color: #c084fc;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 14px;
+        }
+
+        .record-title { font-size: 17px; font-weight: 700; color: #ffffff; margin-bottom: 8px; }
+        .record-meta { font-size: 13.5px; color: var(--text-muted); margin-bottom: 18px; line-height: 1.6; }
+
+        .url-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #a855f7;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            padding: 10px 14px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .url-link:hover {
+            background: rgba(168, 85, 247, 0.25);
+            color: #f3e8ff;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.2);
+        }
+
+        /* Toast Alerts */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 16px 26px;
+            border-radius: 14px;
+            color: white;
+            font-weight: 600;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .toast.success { background: rgba(16, 185, 129, 0.9); border: 1px solid #059669; }
+        .toast.error { background: rgba(244, 63, 94, 0.9); border: 1px solid #e11d48; }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Translucent Navbar -->
+    <nav class="navbar">
+        <div class="brand">
+            <i class="fa-solid fa-rocket"></i> DevOps Portal
+        </div>
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="switchPage('formPage', this)">
+                <i class="fa-solid fa-plus"></i> New Submission
+            </button>
+            <button class="nav-btn" onclick="switchPage('recordsPage', this)">
+                <i class="fa-solid fa-layer-group"></i> Submissions Board (<span id="countBadge">0</span>)
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <div class="container">
+        
+        <!-- PAGE 1: Submission Form -->
+        <div id="formPage" class="page-view active">
+            <div class="form-card">
+                <div class="form-header">
+                    <h2>Submit Assignment</h2>
+                    <p>Enter your details and repository link below for automated validation.</p>
+                </div>
+
+                <form id="submissionForm">
+                    <div class="form-group">
+                        <label><i class="fa-regular fa-user"></i> Full Name</label>
+                        <input type="text" id="name" placeholder="e.g. Ali Khan" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-id-card"></i> Registration Number</label>
+                        <input type="text" id="reg_number" placeholder="e.g. FA21-BCS-001" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-book"></i> Assignment Title</label>
+                        <input type="text" id="title" placeholder="e.g. DevOps Mid Lab Assignment" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label><i class="fa-solid fa-link"></i> Submission URL (GitHub Repo)</label>
+                        <input type="url" id="submission_url" placeholder="https://github.com/username/repository" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">
+                        <i class="fa-solid fa-paper-plane"></i> Submit Assignment
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- PAGE 2: Submissions Record Board -->
+        <div id="recordsPage" class="page-view">
+            <div class="records-header">
+                <div>
+                    <h2 style="font-size: 24px; font-weight: 800; color: #fff;">Submitted Records</h2>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">Verified assignment submissions list.</p>
+                </div>
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="Search by name or reg #..." onkeyup="filterSubmissions()">
+                </div>
+            </div>
+
+            <div id="gridList" class="grid-list">
+                <!-- Dynamic Submission Cards -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Floating Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        let allSubmissions = [];
+
+        function switchPage(pageId, btnElement) {
+            document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(pageId).classList.add('active');
+            btnElement.classList.add('active');
+
+            if (pageId === 'recordsPage') {
+                loadSubmissions();
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = type === 'success' 
+                ? `<i class="fa-solid fa-circle-check"></i> ${message}` 
+                : `<i class="fa-solid fa-circle-exclamation"></i> ${message}`;
+            toast.style.display = 'flex';
+            setTimeout(() => { toast.style.display = 'none'; }, 3500);
+        }
+
+        async function loadSubmissions() {
+            try {
+                const res = await fetch('/submissions');
+                const data = await res.json();
+                allSubmissions = data.submissions || [];
+                document.getElementById('countBadge').innerText = allSubmissions.length;
+                renderSubmissions(allSubmissions);
+            } catch (err) {
+                showToast('Failed to load submissions records.', 'error');
+            }
+        }
+
+        function renderSubmissions(list) {
+            const grid = document.getElementById('gridList');
+            if (list.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; background: var(--card-bg); border-radius: 18px; border: 1px dashed var(--card-border);">
+                        <i class="fa-solid fa-box-open" style="font-size: 42px; color: #64748b; margin-bottom: 12px;"></i>
+                        <h4 style="color: #cbd5e1; font-size: 18px;">No Submissions Found</h4>
+                        <p style="color: #64748b; font-size: 14px; margin-top: 4px;">Submissions will appear here once students submit the form.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = list.map(item => `
+                <div class="record-card">
+                    <span class="card-badge"><i class="fa-solid fa-hashtag"></i> RECORD #${item.id}</span>
+                    <div class="record-title">${escapeHtml(item.title)}</div>
+                    <div class="record-meta">
+                        <i class="fa-solid fa-user" style="color: #8b5cf6;"></i> <strong>${escapeHtml(item.name)}</strong><br>
+                        <i class="fa-solid fa-id-card" style="color: #64748b;"></i> ${escapeHtml(item.reg_number)}
+                    </div>
+                    <a href="${escapeHtml(item.submission_url)}" target="_blank" class="url-link">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Repository
+                    </a>
+                </div>
+            `).join('');
+        }
+
+        function filterSubmissions() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allSubmissions.filter(s => 
+                s.name.toLowerCase().includes(query) || 
+                s.reg_number.toLowerCase().includes(query) ||
+                s.title.toLowerCase().includes(query)
+            );
+            renderSubmissions(filtered);
+        }
+
+        function escapeHtml(str) {
+            return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        document.getElementById('submissionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const payload = {
+                name: document.getElementById('name').value.trim(),
+                reg_number: document.getElementById('reg_number').value.trim(),
+                title: document.getElementById('title').value.trim(),
+                submission_url: document.getElementById('submission_url').value.trim()
+            };
+
+            try {
+                const res = await fetch('/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if (res.status === 201) {
+                    showToast('Submission recorded successfully!', 'success');
+                    document.getElementById('submissionForm').reset();
+                    loadSubmissions();
+                    setTimeout(() => {
+                        switchPage('recordsPage', document.querySelectorAll('.nav-btn')[1]);
+                    }, 800);
+                } else {
+                    showToast(data.message || 'Validation error occurred.', 'error');
+                }
+            } catch (err) {
+                showToast('Server connection failed.', 'error');
+            }
+        });
+
+        loadSubmissions();
+    </script>
+</body>
+</html>
