@@ -29,7 +29,7 @@ jobs:
       env:
         PYTHONPATH: .
       run: |
-        python -m pytest --json-report --json-report-file=test-report.json
+        python -m pytest -v --json-report --json-report-file=test-report.json
 
     - name: Send Test Results to Receiver
       if: always()
