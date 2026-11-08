@@ -22,7 +22,7 @@ jobs:
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pytest pytest-json-report requests flask
+        pip install "pytest<8.0.0" pytest-json-report pytest-metadata requests flask
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Run Pytest & Generate Report
@@ -36,6 +36,7 @@ jobs:
       env:
         RECEIVER_URL: ${{ secrets.RECEIVER_URL }}
       run: |
-        if [ -n "$RECEIVER_URL" ] && [ -f test-report.json ]; then
-          curl -X POST -H "Content-Type: application/json" -d @test-report.json "$RECEIVER_URL"
+        CLEAN_URL=$(echo "$RECEIVER_URL" | tr -d '"' | tr -d "'" | xargs)
+        if [ -n "$CLEAN_URL" ] && [ -f test-report.json ]; then
+          curl -X POST -H "Content-Type: application/json" -d @test-report.json "$CLEAN_URL" || true
         fi
