@@ -26,7 +26,7 @@ def home():
 
 @app.route('/submit', methods=['POST'])
 def submit_assignment():
-    data = request.get_json(silent=True) or {}
+    data = request.get_json() or {}
     
     name = data.get('name')
     reg_number = data.get('reg_number')
